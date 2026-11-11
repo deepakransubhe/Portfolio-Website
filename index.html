@@ -60,6 +60,127 @@ html, body {
   -webkit-user-select: none;
 }
 
+/* Portfolio intro */
+#intro {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  pointer-events: none;
+  background: #07080b;
+  opacity: 1;
+  transition: opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+}
+#intro .intro-copy {
+  position: absolute;
+  top: calc(50% - 112px);
+  left: 50%;
+  width: min(90vw, 420px);
+  color: #f4f3ef;
+  text-align: center;
+  transform: translate(-50%, 0);
+  opacity: 1;
+  transition: opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+#intro .intro-copy strong {
+  display: block;
+  font: 700 clamp(15px, 2vw, 18px)/1.2 var(--font);
+  letter-spacing: 0.12em;
+}
+#intro .intro-copy span {
+  display: block;
+  margin-top: 7px;
+  color: rgba(244, 243, 239, 0.66);
+  font: 500 10px/1.4 var(--mono);
+  letter-spacing: 0.1em;
+}
+body[data-intro="shape"] #intro .intro-copy {
+  opacity: 0;
+  transform: translate(-50%, -6px);
+}
+body[data-intro="drop"] #intro {
+  opacity: 0;
+}
+body[data-intro="load"] .dock,
+body[data-intro="shape"] .dock {
+  bottom: 50%;
+  transform: translate(-50%, 50%);
+  transition: width 0.62s cubic-bezier(0.22, 1, 0.36, 1),
+              height 0.62s cubic-bezier(0.22, 1, 0.36, 1),
+              padding 0.62s cubic-bezier(0.22, 1, 0.36, 1),
+              bottom 0.82s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.82s cubic-bezier(0.22, 1, 0.36, 1),
+              background 0.4s ease,
+              border-color 0.4s ease,
+              box-shadow 0.4s ease;
+}
+body[data-intro="load"] .dock {
+  width: min(192px, calc(100vw - 40px));
+  height: 54px;
+  padding: 5px;
+  overflow: hidden;
+  background: rgba(245, 245, 243, 0.96);
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+}
+body[data-intro="shape"] .dock {
+  width: var(--intro-dock-width, max-content);
+  height: 54px;
+}
+body[data-intro="drop"] .dock {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+  transform: translateX(-50%);
+}
+body[data-intro="load"] .dock button {
+  opacity: 0;
+  pointer-events: none;
+}
+.dock-progress {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.dock-progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: #b6b7b9;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+body[data-intro="load"] .dock-progress {
+  opacity: 1;
+}
+body[data-intro="load"] .dock-progress span {
+  animation: intro-progress 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+body[data-intro="shape"] .dock-progress {
+  opacity: 0;
+}
+body[data-intro="shape"] .dock button {
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+}
+body[data-intro="drop"] .dock button {
+  opacity: 1;
+  transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+}
+body[data-intro="shape"] .dock,
+body[data-intro="drop"] .dock {
+  background: var(--gl);
+  border-color: var(--gl-border);
+  box-shadow: 0 16px 36px -10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+@keyframes intro-progress {
+  to { transform: scaleX(1); }
+}
+
 /* ========================================================
    TOP HUD / HEADER
    ======================================================== */
@@ -154,7 +275,7 @@ html, body {
 }
 
 /* ========================================================
-   WEBGL CANVAS (Case Studies Wall)
+   WEBGL CANVAS (Projects Wall)
    ======================================================== */
 #c {
   position: fixed;
@@ -337,6 +458,12 @@ body[data-v="more"] .bp::after {
   opacity: 0.78;
   -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 88%, transparent);
   mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 88%, transparent);
+}
+
+body[data-v="exp"] .bp::before,
+body[data-v="exp"] .bp::after {
+  background-position: var(--exp-bg-shift, 0px) 0, var(--exp-bg-shift, 0px) 0;
+  transition: background-position 420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Section wrapper */
@@ -1037,7 +1164,14 @@ body.pl-open .dock { opacity: 0 !important; pointer-events: none !important; }
 .pl-ctrl input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border: 0; border-radius: 50%; background: #fff; }
 </style>
 </head>
-<body data-v="cases">
+<body data-v="cases" data-intro="load">
+
+<div id="intro" aria-hidden="true">
+  <div class="intro-copy">
+    <strong>Deepak Ransubhe</strong>
+    <span>3D Artist | VFX | Software Developer</span>
+  </div>
+</div>
 
 <!-- Top HUD Brand -->
 <header class="hud-top">
@@ -1153,9 +1287,10 @@ body.pl-open .dock { opacity: 0 !important; pointer-events: none !important; }
 
 <!-- Floating Glass Pill Dock -->
 <nav class="dock" aria-label="Sections">
+  <div class="dock-progress" aria-hidden="true"><span></span></div>
   <button data-k="cases" class="on">
     <svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
-    Case studies
+    Projects
   </button>
   <button data-k="exp">
     <svg viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7z"/><path d="M10 12h6M10 16h6"/></svg>
@@ -1941,6 +2076,7 @@ var MIN = 2016, MAX = 2028;
 var yrw = document.getElementById("yrw");
 var tl = document.getElementById("tl");
 var tr = document.getElementById("tr");
+var expBackground = document.querySelector(".bp");
 var info = document.getElementById("info");
 var dgs = [], mk, segs = [], curJ = -1, curY = 0, infoToken = 0;
 
@@ -2003,6 +2139,7 @@ function setYear(y) {
   var yearProgress = ((MAX - y) / (MAX - MIN) * 100);
   mk.style.left = yearProgress + "%";
   tl.style.setProperty("--year-progress", yearProgress + "%");
+  expBackground.style.setProperty("--exp-bg-shift", (yearProgress * 1.6) + "px");
 
   var j = 0;
   JOBS.forEach(function(x, i) {
@@ -2185,6 +2322,29 @@ addEventListener("keydown", function(e) {
 
 build();
 requestAnimationFrame(frame);
+
+var intro = document.getElementById("intro");
+if (intro) {
+  var introDock = document.querySelector(".dock");
+  introDock.style.width = "max-content";
+  var introDockWidth = introDock.getBoundingClientRect().width;
+  introDock.style.width = "";
+  introDock.style.setProperty("--intro-dock-width", introDockWidth + "px");
+  var introReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var introLoadDuration = introReducedMotion ? 100 : 1800;
+  var introShapeDuration = introReducedMotion ? 30 : 620;
+  var introDropDuration = introReducedMotion ? 80 : 820;
+  window.setTimeout(function() {
+    document.body.dataset.intro = "shape";
+    window.setTimeout(function() {
+      document.body.dataset.intro = "drop";
+      window.setTimeout(function() {
+        intro.remove();
+        document.body.removeAttribute("data-intro");
+      }, introDropDuration);
+    }, introShapeDuration);
+  }, introLoadDuration);
+}
 </script>
 </body>
 </html>

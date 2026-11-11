@@ -6,7 +6,7 @@ export const ui = {
   topActions: { timeMachine: 'Time Machine' },
   hud: {
     home: 'Home',
-    work: 'Case studies',
+    work: 'Projects',
     experience: 'Experience',
     projects: 'Side projects',
     more: 'More',
